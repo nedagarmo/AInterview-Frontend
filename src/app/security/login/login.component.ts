@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AuthenticationService } from '../services/authentication.service'
 
 @Component({
   selector: 'app-login',
@@ -10,8 +13,8 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
 
   constructor(private fb: FormBuilder,
-                private authService: AuthService,
-                private router: Router) {
+              private authService: AuthenticationService,
+              private router: Router) {
 
       this.form = this.fb.group({
           email: ['', Validators.required],

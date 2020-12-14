@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as moment from "moment";
+import { tap, shareReplay } from 'rxjs/operators'
+import { HttpClient } from '@angular/common/http';
+import { User } from '../models/user'
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +13,7 @@ export class AuthenticationService {
 
   }
 
-  private setSession(authResult) {
+  private setSession(authResult: any) {
     const expiresAt = moment().add(authResult.expiresIn,'second');
 
     localStorage.setItem('id_token', authResult.idToken);
@@ -18,9 +21,8 @@ export class AuthenticationService {
   }
 
   login(email:string, password:string ) {
-      return this.http.post<User>('/api/login', {email, password})
-          .do(res => this.setSession)
-          .shareReplay();
+      return this.http.post<User>('/api/login', { email, password })
+          .pipe(tap((res: any) => this.setSession), shareReplay())
   }
 
   logout() {
@@ -38,7 +40,12 @@ export class AuthenticationService {
 
   getExpiration() {
       const expiration = localStorage.getItem("expires_at");
-      const expiresAt = JSON.parse(expiration);
-      return moment(expiresAt);
+
+      if (expiration) {
+        const expiresAt = JSON.parse(expiration);
+        return moment(expiresAt);
+      }
+
+      return null;
   }
 }
