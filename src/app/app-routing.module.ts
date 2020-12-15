@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LoginComponent } from './security/login/login.component';
 
 const routes: Routes = [
+  { path: '', component: LoginComponent },
   { path: 'security', loadChildren: () => import('./security/security.module').then(m => m.SecurityModule) },
   { path: 'interview', loadChildren: () => import('./interview/interview.module').then(m => m.InterviewModule) }
 ];
