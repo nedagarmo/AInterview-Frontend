@@ -1,5 +1,21 @@
 <div class="container center">
-  <video ></video>
+  <video #remotePlayer [srcObject]="remoteVideo" class="remoteVideo" autoplay playsinline></video>
+  <div>
+    <div class="smallVideo">
+        <video #localPlayer [srcObject]="localVideo" class="localVideo" autoplay playsinline muted></video>
+    </div>
+    <div class="controls">
+        <a class="btn btn-danger" (click)="onToggleAudio()" title="Activar/Desactivar audio">
+            <span *ngIf="constraints.audio"><i class="fas fa-microphone-slash"></i></span>
+            <span *ngIf="!constraints.audio"><i class="fas fa-microphone"></i></span>
+        </a>
+        <a class="btn btn-danger" (click)="onToggleVideo()" title="Activar/Desactivar video">
+            <span *ngIf="constraints.video"><i class="fas fa-video-slash"></i></span>
+            <span *ngIf="!constraints.video"><i class="fas fa-video"></i></span>
+        </a>
+        <a class="btn btn-danger" (click)="onHangup()" title="Terminar la consulta"><i class="fas fa-phone-slash"></i></a>
+    </div>
+  </div>
   <canvas #canvas style="display:none"></canvas>
   <canvas #canvasFace width="640" height="480"></canvas>
 </div>

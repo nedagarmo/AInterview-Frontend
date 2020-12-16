@@ -1,0 +1,31 @@
+.remoteVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.localVideo {
+  width: 100%;
+}
+
+.smallVideo {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 25%;
+}
+
+.controls {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translate(-50%, -50%);
+  margin: 0 auto;
+  color: #fff;
+}
+
+.controls a {
+  margin: 10px;
+}

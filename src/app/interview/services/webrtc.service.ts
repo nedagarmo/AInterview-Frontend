@@ -20,6 +20,10 @@ export class WebrtcService {
     this.socket.emit('message', message);
   }
 
+  sendEmit(label: string, message: any): void {
+    this.socket.emit(label, message);
+  }
+
   sendChat(chat: Message) {
     this.socket.emit('chat', chat)
   }

@@ -1,5 +1,4 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
 import { WebrtcService } from '../services/webrtc.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Message } from '../models/message';
@@ -10,16 +9,12 @@ import { Message } from '../models/message';
   styleUrls: ['./meet.component.scss']
 })
 export class MeetComponent implements OnInit {
-  /******   OLD CODE    */
   @ViewChild('canvas') canvas: any;
-  @ViewChild('canvasFace') canvasFace: any;
+  @ViewChild('localPlayer') video: any;
 
-  private media: any
-  private width: any
-  private height: any
-  private image: any
-  private context: any
-  /********** OLD CODE */
+  private width: any;
+  private height: any;
+  private context: any;
 
   // Encapsula el código de la sala de videollamada.
   public roomCode: any;
@@ -61,13 +56,11 @@ export class MeetComponent implements OnInit {
     offerToReceiveVideo: true
   };
 
-  constructor(private socket: Socket,
-              public _WebrtcService: WebrtcService,
+  constructor(public _WebrtcService: WebrtcService,
               private _ActiveRoute: ActivatedRoute,
               private _Router: Router) {
     this.width = 640
     this.height = 480
-    this.image = new Image()
 
     this.chatMessages = Array<Message>();
 
@@ -110,49 +103,26 @@ export class MeetComponent implements OnInit {
     window.onbeforeunload = this.onHangup.bind(this);
   }
 
-  takepicture(stream: any) {
+  takepicture(video: any) {
     return () => {
       if (this.width && this.height) {
-        /* this.canvas.nativeElement.width = this.width
+        this.canvas.nativeElement.width = this.width
         this.canvas.nativeElement.height = this.height
         this.context.drawImage(video, 0, 0, this.width, this.height)
         const jpgQuality = 0.6
-        const theDataURL = this.canvas.nativeElement.toDataURL('image/jpeg', jpgQuality) */
-        const track = stream.getVideoTracks()[0]
-        const image = new ImageCapture(track);
-        this.socket.emit('frame', theDataURL)
+        const theDataURL = this.canvas.nativeElement.toDataURL('image/jpeg', jpgQuality)
+        this._WebrtcService.sendEmit('frame', theDataURL)
       }
     }
   }
 
-  mediaSuccess(mediaStream: any) {
-    const video = document.getElementsByTagName('video')[0]
-    video.srcObject = mediaStream
-    video.play()
-    setInterval(this.takepicture(video), 1000 * 10)
-  }
-
   ngAfterViewInit(): void {
-    console.log(this.canvas)
     this.context = this.canvas.nativeElement.getContext('2d')
     this.context.fillStyle = '#333'
-    this.context.fillText('Loading...', this.canvasFace.nativeElement.width / 2 - 30, this.canvasFace.nativeElement.height / 3)
 
-    this.socket.on('frame',  (data: any) => {
-      // Reference: http://stackoverflow.com/questions/24107378/socket-io-began-to-support-binary-stream-from-1-0-is-there-a-complete-example-e/24124966#24124966
-      const uint8Arr = new Uint8Array(data.buffer)
-      const str = String.fromCharCode.apply(uint8Arr)
-      const base64String = btoa(str)
-
-      this.image.onload = () => {
-        this.context.drawImage(this.image, 0, 0, this.canvasFace.nativeElement.width, this.canvasFace.nativeElement.height);
-      }
-      this.image.src = 'data:image/png;base64,' + base64String
+    this._WebrtcService.socket.on('results',  (data: any) => {
+      console.log(data);
     })
-
-    // console.log("request media: ", this.media)
-    // this.media = navigator.getUserMedia({ video: true, audio: false }, this.mediaSuccess.bind(this), this.mediaError.bind(this))
-    // console.log("post request media: ", this.media)
   }
 
   ngOnInit(): void {
@@ -228,11 +198,11 @@ export class MeetComponent implements OnInit {
 
   // Esta función se ejecuta si el usuario permitio acceso al periferico de entrada de video.
   // Pone el stream local en el control de video correspondiente.
-  gotStream(stream: any) {
+  gotStream(stream: MediaStream): void {
     this.localStream = stream;
     this.localVideo = stream;
 
-    setInterval(this.takepicture(stream), 1000 * 10)
+    setInterval(this.takepicture(this.video.nativeElement), 1000 * 10)
 
     // Enviamos notificación sobre disponibilidad de dispositivos de media en este par.
     this._WebrtcService.sendMessage('got user media');
