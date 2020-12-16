@@ -29,8 +29,8 @@ export class LoginComponent implements OnInit {
           this.authService.login(val.email, val.password)
               .subscribe(
                   () => {
-                      console.log("User is logged in");
-                      this.router.navigateByUrl('/');
+                      console.log("Usuario logueado correctamente!");
+                      this.router.navigateByUrl('/interview/calendar');
                   }
               );
       }
