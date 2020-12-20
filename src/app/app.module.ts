@@ -1,9 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
+import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule } from './app-routing.module';
 import { AppInterceptor } from './app.interceptor'
 import { AppComponent } from './app.component';
@@ -27,6 +29,12 @@ const config: SocketIoConfig = { url: 'ws://localhost:5000', options: { } };
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
+    CommonModule,
+    ToastrModule.forRoot({
+      timeOut: 5000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }),
     BrowserAnimationsModule,
     AngularMaterialModule,
 

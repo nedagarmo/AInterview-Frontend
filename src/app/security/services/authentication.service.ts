@@ -16,15 +16,21 @@ export class AuthenticationService {
   }
 
   private setSession(authResult: any) {
+    console.log("comprobación")
     const expiresAt = moment().add(authResult.expiresIn, 'second');
 
     localStorage.setItem('token', authResult.idToken);
     localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()) );
   }
 
-  login(email:string, password:string ) {
+  login(email:string, password:string) {
       return this.http.post<User>(environment.backend + '/api/login', { email, password })
-          .pipe(tap((res: any) => this.setSession), shareReplay())
+          .pipe(tap((result: any) => this.setSession(result)), shareReplay())
+  }
+
+  register(email:string, password:string, fullName:string, rol:string) {
+      return this.http.post<User>(environment.backend + '/api/register', { email, password, fullName, rol})
+          .pipe(shareReplay())
   }
 
   logout() {
