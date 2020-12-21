@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  backend: "http://192.168.0.25:3000"
+  backend: "https://back-ainterview.logicalsf.com"
 };
 
 /*
