@@ -13,7 +13,8 @@ export class WebrtcService {
   }
 
   connect(room: any) {
-    this.socket.emit('create or join', room);
+    const token = Math.random() * (10 - 1) + 1;
+    this.socket.emit('join', {token, room});
   }
 
   sendMessage(message: any) {

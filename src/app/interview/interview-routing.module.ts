@@ -12,7 +12,7 @@ const routes: Routes = [
     canActivate: [AuthenticationGuard]
   },
   {
-    path: 'meet',
+    path: 'meet/:code',
     component: MeetComponent,
     canActivate: [AuthenticationGuard]
   },

@@ -136,14 +136,16 @@ export class MeetComponent implements OnInit {
   onOccupiedRoom(room: any) {
     this.onHangup();
     alert('No le es permitido entrar a la consulta.');
-    this._Router.navigate(['schedule/']);
+    this._Router.navigate(['calendar/']);
   }
 
   onPeerRequestToJoin (room: any){
+    console.log("Join Event")
     this.isChannelReady = true;
   }
 
   onJoinedPeer(room: any) {
+    console.log("Joined Event")
     this.isChannelReady = true;
   }
 
@@ -202,7 +204,7 @@ export class MeetComponent implements OnInit {
     this.localStream = stream;
     this.localVideo = stream;
 
-    setInterval(this.takepicture(this.video.nativeElement), 1000 * 10)
+    setInterval(this.takepicture(this.video.nativeElement), 1000 * 60)
 
     // Enviamos notificación sobre disponibilidad de dispositivos de media en este par.
     this._WebrtcService.sendMessage('got user media');
@@ -210,6 +212,7 @@ export class MeetComponent implements OnInit {
     // Si este usuario inicia la sala (o es el primero en acceder a ella),
     // ejecuta la función para iniciar la conexión entre pares.
     if (this.isInitiator) {
+      console.log("Maybe!")
       this.maybeStart();
     }
   }
