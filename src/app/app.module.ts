@@ -16,7 +16,7 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { SecurityModule } from './security/security.module';
 import { InterviewModule } from './interview/interview.module';
 
-const config: SocketIoConfig = { url: 'ws://localhost:5000', options: { } };
+const config: SocketIoConfig = { url: 'wss://proc-ainterview.logicalsf.com', options: { } };
 
 @NgModule({
   declarations: [

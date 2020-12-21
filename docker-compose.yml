@@ -1,0 +1,13 @@
+version: '3'  
+services:
+  ainterview-frontend:
+    image: ainterview-frontend-image
+    container_name: ainterview-frontend-container
+    build: ./
+    ports:  
+      - "7000:80"
+    networks:
+      - ainterview_network
+networks:
+  ainterview_network:
+     external: true
