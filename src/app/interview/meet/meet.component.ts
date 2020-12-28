@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { WebrtcService } from '../services/webrtc.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Message } from '../models/message';
+import { ProcessorService } from '../services/processor.service';
 
 @Component({
   selector: 'app-meet',
@@ -56,7 +57,8 @@ export class MeetComponent implements OnInit {
     offerToReceiveVideo: true
   };
 
-  constructor(public _WebrtcService: WebrtcService,
+  constructor(private _ProcessorService: ProcessorService,
+              private _WebrtcService: WebrtcService,
               private _ActiveRoute: ActivatedRoute,
               private _Router: Router) {
     this.width = 640
@@ -68,7 +70,7 @@ export class MeetComponent implements OnInit {
       this.roomCode = v.code;
     });
 
-    this._WebrtcService.connect(this.roomCode);
+    _WebrtcService.socket.on('ipaddr', this.onIpAddress.bind(this));
 
     // Escuchador por la notificación de sala creada.  Por lo que se pondrá true en isInitiator.
     _WebrtcService.socket.on('created', this.onCreatedRoom.bind(this));
@@ -98,9 +100,17 @@ export class MeetComponent implements OnInit {
     // Si hace falta, se le solicitará al usuario el permiso para acceder a ellos.
     this.onStartMedia();
 
+    if (location.hostname.match(/localhost|127\.0\.0/)) {
+      this._WebrtcService.sendEmit('ipaddr', '');
+    }
+
     // En caso que se cierre la ventana o se recargue la página se enviará una notificación al servidor
     // de la pérdida de conexión.
     window.onbeforeunload = this.onHangup.bind(this);
+  }
+
+  onIpAddress(ipaddr: any) {
+    console.log('Server IP address is: ' + ipaddr);
   }
 
   takepicture(video: any) {
@@ -111,7 +121,7 @@ export class MeetComponent implements OnInit {
         this.context.drawImage(video, 0, 0, this.width, this.height)
         const jpgQuality = 0.6
         const theDataURL = this.canvas.nativeElement.toDataURL('image/jpeg', jpgQuality)
-        this._WebrtcService.sendEmit('frame', theDataURL)
+        this._ProcessorService.sendEmit('frame', theDataURL)
       }
     }
   }
@@ -120,7 +130,7 @@ export class MeetComponent implements OnInit {
     this.context = this.canvas.nativeElement.getContext('2d')
     this.context.fillStyle = '#333'
 
-    this._WebrtcService.socket.on('results',  (data: any) => {
+    this._ProcessorService.socket.on('results',  (data: any) => {
       console.log(data);
     })
   }
@@ -135,18 +145,23 @@ export class MeetComponent implements OnInit {
 
   onOccupiedRoom(room: any) {
     this.onHangup();
-    alert('No le es permitido entrar a la consulta.');
+    alert('No le es permitido entrar a la entrevista.');
     this._Router.navigate(['calendar/']);
   }
 
   onPeerRequestToJoin (room: any){
-    console.log("Join Event")
+    console.log("join")
     this.isChannelReady = true;
+    this.maybeStart();
+
+    this._WebrtcService.sendMessage('got user media');
   }
 
   onJoinedPeer(room: any) {
-    console.log("Joined Event")
+    console.log("joined")
     this.isChannelReady = true;
+
+    //this.maybeStart();
   }
 
   onTraking(array: any) {
@@ -162,6 +177,8 @@ export class MeetComponent implements OnInit {
   }
 
   onReceivedMessage(message: any) {
+    console.log("Message: " + message);
+    console.log("Message Type: " + message.type);
     if (message === 'got user media') {
       // Si se recibe el mensaje que notifica que la media del usuario remoto está lista,
       // ejecutamos la función para iniciar la comunicación.
@@ -169,7 +186,7 @@ export class MeetComponent implements OnInit {
     } else if (message.type === 'offer') {
       // Si se recibe el mensaje que notifica una oferta por parte del par remoto,
 
-      // y si este cliente no es el iniciador, y a demás no está iniciada alguna comunicación,
+      // y si este cliente no es el iniciador, y además no está iniciada alguna comunicación,
       // se ejecuta la función para iniciar el protocolo de conexión.
       if (!this.isInitiator && !this.isStarted) {
         this.maybeStart();
@@ -204,21 +221,24 @@ export class MeetComponent implements OnInit {
     this.localStream = stream;
     this.localVideo = stream;
 
-    setInterval(this.takepicture(this.video.nativeElement), 1000 * 60)
+    setInterval(this.takepicture(this.video.nativeElement), 1000 * 3)
 
     // Enviamos notificación sobre disponibilidad de dispositivos de media en este par.
-    this._WebrtcService.sendMessage('got user media');
+    console.log("Room: ", this.roomCode);
+    this._WebrtcService.connect(this.roomCode);
+    // this._WebrtcService.sendMessage('got user media');
 
     // Si este usuario inicia la sala (o es el primero en acceder a ella),
     // ejecuta la función para iniciar la conexión entre pares.
-    if (this.isInitiator) {
-      console.log("Maybe!")
+    /* if (this.isInitiator) {
       this.maybeStart();
-    }
+    }*/
   }
 
   // Función que intenta iniciar comunicación entre los pares conforme al marco ICE.
   maybeStart() {
+    console.log("maybeStart: ", !this.isStarted && typeof this.localStream !== 'undefined' && this.isChannelReady)
+    console.log(this.isStarted, this.localStream, this.isChannelReady)
     if (!this.isStarted && typeof this.localStream !== 'undefined' && this.isChannelReady) {
       // Si no se ha iniciado la comunicación, hay medios locales y el canal está listo (Porque alguien mas está unido a la sala)
       // se ejecuta esta función para crear la conexión entre pares mediante el servidor TURN.

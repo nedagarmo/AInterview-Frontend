@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Socket } from 'ngx-socket-io';
 import { environment } from '../../../environments/environment';
 import { Message } from '../models/message';
 import { HttpClient } from '@angular/common/http';
+import { WebRTCSocket } from '../sockets/webrtc.socket';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebrtcService {
+  private token: number;
 
-  constructor(private http: HttpClient, public socket: Socket) {
+  constructor(private http: HttpClient, public socket: WebRTCSocket) {
+      this.token = Math.random() * (10 - 1) + 1;
   }
 
   connect(room: any) {
-    const token = Math.random() * (10 - 1) + 1;
-    this.socket.emit('join', {token, room});
+    this.socket.emit('join', room);
   }
 
   sendMessage(message: any) {

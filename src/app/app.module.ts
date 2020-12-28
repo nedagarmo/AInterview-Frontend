@@ -11,12 +11,18 @@ import { AppInterceptor } from './app.interceptor'
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { SocketIoModule } from 'ngx-socket-io';
 
 import { SecurityModule } from './security/security.module';
 import { InterviewModule } from './interview/interview.module';
+import { ProcessorSocket } from './interview/sockets/processor.socket';
+import { WebRTCSocket } from './interview/sockets/webrtc.socket';
 
-const config: SocketIoConfig = { url: 'wss://proc-ainterview.logicalsf.com', options: { } };
+
+
+
+// const processorConfig: SocketIoConfig = { url: 'wss://proc-ainterview.logicalsf.com', options: { } };
+// const webrtcConfig: SocketIoConfig = { url: 'wss://wrtc-ainterview.logicalsf.com', options: { } };
 
 @NgModule({
   declarations: [
@@ -38,7 +44,7 @@ const config: SocketIoConfig = { url: 'wss://proc-ainterview.logicalsf.com', opt
     BrowserAnimationsModule,
     AngularMaterialModule,
 
-    SocketIoModule.forRoot(config),
+    SocketIoModule,
 
     SecurityModule,
     InterviewModule,
@@ -48,7 +54,8 @@ const config: SocketIoConfig = { url: 'wss://proc-ainterview.logicalsf.com', opt
       provide: HTTP_INTERCEPTORS,
       useClass: AppInterceptor,
       multi: true
-    }
+    },
+    ProcessorSocket, WebRTCSocket
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
