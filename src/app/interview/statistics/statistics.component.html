@@ -1,0 +1,17 @@
+<div class="panel panel-default">
+  <div class="panel-heading top-bar">
+      <div (click)="onToggleWindow()">
+          <h3 class="panel-title"><span class="fas fa-chart-line icon"></span> Análisis Automático</h3>
+      </div>
+  </div>
+  <div class="panel-body" *ngIf="toggleWindow">
+    <div *ngFor="let statistic of resultList">
+      {{ statistic.model }}
+      <hr />
+      <ul>
+        <li *ngFor="let result of statistic.results">
+          {{ result.getLabel() }}: <span>{{ result.getScore() * 100 / statistic.score | number:'1.2-2' }}%</span></li>
+      </ul>
+    </div>
+  </div>
+</div>

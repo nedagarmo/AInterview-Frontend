@@ -8,5 +8,4 @@ export class ProcessorSocket extends Socket {
         super({ url: 'wss://proc-ainterview.logicalsf.com', options: {} });
         // super({ url: 'ws://localhost:5000', options: {} });
     }
-
 }

@@ -3,6 +3,8 @@ import { WebrtcService } from '../services/webrtc.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Message } from '../models/message';
 import { ProcessorService } from '../services/processor.service';
+import { Result } from '../models/result';
+import { Statistic } from '../models/statistic';
 
 @Component({
   selector: 'app-meet',
@@ -39,6 +41,8 @@ export class MeetComponent implements OnInit {
   public remoteVideo: any;
   // Lista de mensajes de chat
   public chatMessages: Array<Message>;
+  // Lista de resultados del análisis en tiempo real
+  public statistics: Array<Statistic>;
 
   // Configuración de conexión a servidores ICE
   private pcConfig = {
@@ -65,6 +69,7 @@ export class MeetComponent implements OnInit {
     this.height = 480
 
     this.chatMessages = Array<Message>();
+    this.statistics = Array<Statistic>();
 
     this._ActiveRoute.params.subscribe(v => {
       this.roomCode = v.code;
@@ -131,7 +136,21 @@ export class MeetComponent implements OnInit {
     this.context.fillStyle = '#333'
 
     this._ProcessorService.socket.on('results',  (data: any) => {
-      console.log(data);
+      data = JSON.parse(data)
+      data.forEach((item: { model: string; concept: string; }) => {
+        const model = this.statistics.filter(item => item.model == item.model)
+        if(model.length > 0) {
+          const index = model[0].results.findIndex(i => i.getLabel() == item.concept)
+          if(index < 0)
+            model[0].results.push(new Result(item.concept, 1));
+          else
+            model[0].results[index].setIncrement();
+
+          model[0].setIncrement();
+        } else {
+          this.statistics.push(new Statistic(item.model, 1, [new Result(item.concept, 1)]))
+        }
+      });
     })
   }
 

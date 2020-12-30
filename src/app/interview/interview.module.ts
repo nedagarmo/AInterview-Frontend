@@ -12,6 +12,7 @@ import { InterviewRoutingModule } from './interview-routing.module'
 
 import { MeetComponent } from './meet/meet.component';
 import { CalendarComponent } from './calendar/calendar.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 
 FullCalendarModule.registerPlugins([
@@ -20,7 +21,7 @@ FullCalendarModule.registerPlugins([
 ]);
 
 @NgModule({
-  declarations: [MeetComponent, CalendarComponent],
+  declarations: [MeetComponent, CalendarComponent, StatisticsComponent],
   imports: [
     CommonModule,
     FormsModule,

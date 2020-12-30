@@ -16,6 +16,7 @@
         <a class="btn btn-danger" (click)="onHangup()" title="Terminar la consulta"><i class="fas fa-phone-slash"></i></a>
     </div>
   </div>
+  <app-interview-statistics [resultList]="statistics"></app-interview-statistics>
   <canvas #canvas style="display:none"></canvas>
   <canvas #canvasFace width="640" height="480"></canvas>
 </div>
