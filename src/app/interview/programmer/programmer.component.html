@@ -1,0 +1,34 @@
+<h1 mat-dialog-title style="text-align: center;" *ngIf="data.id">Detalle de Entrevista</h1>
+<h1 mat-dialog-title style="text-align: center;" *ngIf="data.id == null">Programar Entrevista</h1>
+<div mat-dialog-content class="pt-3">
+    <form [formGroup]="form">
+        <p>
+            <mat-form-field style="width: 95%;">
+                <mat-label>Titulo de entrevista</mat-label>
+                <input matInput placeholder="Titulo de entrevista" name="title" formControlName="title">
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-label>Fecha inicial</mat-label>
+        </p>
+        <p>
+            <dp-date-picker formControlName="start" theme="dp-material" mode='daytime' [config]="configDatePicker"></dp-date-picker>
+        </p>
+        <p>
+            <mat-label>Fecha final</mat-label>
+        </p>
+        <p>
+            <dp-date-picker formControlName="end" theme="dp-material" mode='daytime' [config]="configDatePicker"></dp-date-picker>
+        </p>
+        <p>
+            <mat-form-field style="width: 95%;">
+                <mat-label>Correo de entrevistado</mat-label>
+                <input matInput placeholder="Correo de entrevistado" name="email" formControlName="email">
+            </mat-form-field>
+        </p>
+    </form>
+</div>
+<div mat-dialog-actions style="text-align: center;" class="pt-5">
+    <button *ngIf="data.id" mat-raised-button (click)="delete()" color="warn" >Eliminar</button>
+    <button *ngIf="!data.id" mat-raised-button (click)="save()" color="primary">Guardar</button>
+</div>

@@ -240,7 +240,7 @@ export class MeetComponent implements OnInit {
     this.localStream = stream;
     this.localVideo = stream;
 
-    setInterval(this.takepicture(this.video.nativeElement), 1000 * 3)
+    setInterval(this.takepicture(this.video.nativeElement), 1000 / 10)
 
     // Enviamos notificación sobre disponibilidad de dispositivos de media en este par.
     console.log("Room: ", this.roomCode);

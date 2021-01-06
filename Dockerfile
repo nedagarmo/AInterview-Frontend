@@ -9,9 +9,9 @@ ENV APP ${APP}
 WORKDIR /app
 COPY ./ /app/
 
-# Instala y construye el Angular App
+# Instala y construye las dependencias con npm
 RUN npm ci
-# RUN node --max_old_space_size=128 node_modules/@angular/cli/bin/ng build --prod
+# Compilamos la aplicación Angular
 RUN npm run build --prod
 RUN mv /app/dist/${APP}/* /app/dist/
 

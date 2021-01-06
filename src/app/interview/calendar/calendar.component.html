@@ -4,7 +4,13 @@
   <a mat-button mat-raised-button routerLinkActive="active" (click)="logout()">Cerrar sesión</a>
 </mat-toolbar>
 <mat-card>
-  <mat-card-title><span>Calendario de Entrevistas</span></mat-card-title>
+  <mat-card-title class="mr-3">
+    <div class="row">
+      <span>Calendario de Entrevistas</span>
+      <span class="navbar-spacer"></span>
+      <button mat-flat-button (click)="openDialog()" color="primary">Programar entrevista</button>
+    </div>
+  </mat-card-title>
   <mat-card-content>
     <full-calendar [options]="calendarOptions"></full-calendar>
   </mat-card-content>
