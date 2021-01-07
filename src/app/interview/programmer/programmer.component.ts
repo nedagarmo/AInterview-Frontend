@@ -32,15 +32,17 @@ export class ProgrammerComponent implements OnInit {
 
   ngOnInit() {
     console.log("entro", this.data)
-    this.calendarService.getInterview(this.data.id)
-    .subscribe(
-      (result: any) => {
-        this.form.controls['title'].setValue(result.title)
-        this.form.controls['start'].setValue(result.start)
-        this.form.controls['end'].setValue(result.end)
-        this.form.controls['email'].setValue(result.email)
-      }
-    );
+    if(this.data.id != undefined && this.data.id != null) {
+      this.calendarService.getInterview(this.data.id)
+      .subscribe(
+        (result: any) => {
+          this.form.controls['title'].setValue(result.title)
+          this.form.controls['start'].setValue(result.start)
+          this.form.controls['end'].setValue(result.end)
+          this.form.controls['email'].setValue(result.email)
+        }
+      );
+    }
   }
 
   onNoClick(): void {
