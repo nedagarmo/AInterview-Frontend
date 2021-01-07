@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { Interview } from '../models/interview';
+import { CalendarService } from '../services/calendar.service';
 
 @Component({
   selector: 'app-programmer',
@@ -19,6 +20,7 @@ export class ProgrammerComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<ProgrammerComponent>,
               private toastr: ToastrService,
               private fb: FormBuilder,
+              private calendarService: CalendarService,
               @Inject(MAT_DIALOG_DATA) public data: Interview) {
     this.form = this.fb.group({
       title: ['', Validators.required],
@@ -30,15 +32,15 @@ export class ProgrammerComponent implements OnInit {
 
   ngOnInit() {
     console.log("entro", this.data)
-      /**
-       * Aca va la peticion para Obtener
-      */
-      // this.authService.login(val.email, val.password)
-      //   .subscribe(
-      //     () => {
-      //       this.toastr.success("Usuario logueado correctamente!");
-      //     }
-      //   );
+    this.calendarService.getInterview(this.data.id)
+    .subscribe(
+      (result: any) => {
+        this.form.controls['title'].setValue(result.title)
+        this.form.controls['start'].setValue(result.start)
+        this.form.controls['end'].setValue(result.end)
+        this.form.controls['email'].setValue(result.email)
+      }
+    );
   }
 
   onNoClick(): void {
@@ -46,18 +48,13 @@ export class ProgrammerComponent implements OnInit {
   }
 
   delete() {
-      /**
-       * Aca va la peticion para Eliminar
-      */
-      // this.authService.login(val.email, val.password)
-      //   .subscribe(
-      //     () => {
-      //       this.toastr.success("Usuario logueado correctamente!");
-      //     }
-      //   );
-
-      //Una vez se realice la peticion en la response agregar esto
-      this.onNoClick();
+    this.calendarService.deleteInterview()
+    .subscribe(
+      (result: any) => {
+        this.toastr.success("Se ha eliminado la entrevista correctamente");
+        this.onNoClick();
+      }
+    );
   }
 
   save() {
@@ -65,18 +62,13 @@ export class ProgrammerComponent implements OnInit {
 
     if (val.title && val.start && val.end && val.email) {
       console.log(this.form.value)
-      /**
-       * Aca va la peticion para crear o editart
-      */
-      // this.authService.login(val.email, val.password)
-      //   .subscribe(
-      //     () => {
-      //       this.toastr.success("Usuario logueado correctamente!");
-      //     }
-      //   );
-
-      //Una vez se realice la peticion en la response agregar esto
-      this.onNoClick();
+      this.calendarService.interviewProgrammer()
+      .subscribe(
+        (result: any) => {
+          this.toastr.success("Se ha programado la entrevista correctamente");
+          this.onNoClick();
+        }
+      );
     }
     else {
       this.toastr.error('Todos los campos son obligatorios');

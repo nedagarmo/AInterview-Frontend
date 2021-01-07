@@ -5,6 +5,7 @@ import { AuthenticationService } from '../../security/services/authentication.se
 import { Router } from '@angular/router';
 import { ProgrammerComponent } from '../programmer/programmer.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CalendarService } from '../services/calendar.service';
 
 @Component({
   selector: 'app-calendar',
@@ -25,6 +26,7 @@ export class CalendarComponent implements OnInit {
   };
 
   constructor(private authService: AuthenticationService,
+    private calendarService: CalendarService,
     private router: Router, public dialog: MatDialog
   ) { }
 
@@ -84,32 +86,12 @@ export class CalendarComponent implements OnInit {
   async getEvents() {
     let calendarApi = this.calendarComponentChield?.getApi();
     console.log(calendarApi?.getDate().getMonth())  // 0: enero, 1 febrero .....
-    /**
-     * Aca va la peticion para refrescar los eventos una vez creados o eliminados
-    */
-    // this.authService.login(val.email, val.password)
-    //   .subscribe(
-    //     () => {
-    //       this.toastr.success("Usuario logueado correctamente!");
-    //     }
-    //   );
-    this.calendarOptions['events'] = [{
-      title: 'Entrevista Desarrollador de Software',
-      start: '2021-01-06 08:00',
-      end: '2021-01-06 09:00',
-      id: '1'
-    },
-    {
-      title: 'Entrevista Arquitecto de Software',
-      start: '2021-01-07 11:00',
-      end: '2021-01-07 12:00',
-      id: '2'
-    },
-    {
-      title: 'Entrevista Gerente de Proyectos',
-      start: '2021-01-09 15:00',
-      end: '2021-01-09 16:00',
-      id: '3'
-    }]
+
+    this.calendarService.getInterviewList()
+      .subscribe(
+        (result: any) => {
+          this.calendarOptions['events'] = result;
+        }
+      );
   }
 }

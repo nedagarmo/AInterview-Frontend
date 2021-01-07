@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
       if (val.email && val.password) {
           this.authService.login(val.email, val.password)
               .subscribe(
-                  () => {
+                  (result: any) => {
                     this.toastr.success("Usuario logueado correctamente!");
                     this.router.navigateByUrl('/interview/calendar');
                   }
