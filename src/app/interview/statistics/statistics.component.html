@@ -6,7 +6,7 @@
   </div>
   <div class="panel-body" *ngIf="toggleWindow">
     <div *ngFor="let statistic of resultList">
-      {{ statistic.model }}
+      Modelo: {{ statistic.model }}
       <hr />
       <ul>
         <li *ngFor="let result of statistic.results">

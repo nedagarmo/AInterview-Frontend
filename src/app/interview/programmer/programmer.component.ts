@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { Interview } from '../models/interview';
@@ -21,6 +22,7 @@ export class ProgrammerComponent implements OnInit {
               private toastr: ToastrService,
               private fb: FormBuilder,
               private calendarService: CalendarService,
+              private router: Router,
               @Inject(MAT_DIALOG_DATA) public data: Interview) {
     this.form = this.fb.group({
       title: ['', Validators.required],
@@ -57,6 +59,10 @@ export class ProgrammerComponent implements OnInit {
         this.onNoClick();
       }
     );
+  }
+
+  go() { 
+    this.router.navigateByUrl('/meet/1');
   }
 
   save() {

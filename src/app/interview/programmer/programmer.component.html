@@ -29,6 +29,7 @@
     </form>
 </div>
 <div mat-dialog-actions style="text-align: center;" class="pt-5">
+    <button *ngIf="data.id" mat-raised-button (click)="go()" color="warn">Entrar</button>
     <button *ngIf="data.id" mat-raised-button (click)="delete()" color="warn" >Eliminar</button>
     <button *ngIf="!data.id" mat-raised-button (click)="save()" color="primary">Guardar</button>
 </div>
