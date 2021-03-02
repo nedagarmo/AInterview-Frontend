@@ -13,7 +13,7 @@ import { Statistic } from '../models/statistic';
 })
 export class MeetComponent implements OnInit {
   @ViewChild('canvas') canvas: any;
-  @ViewChild('localPlayer') video: any;
+  @ViewChild('remotePlayer') video: any;
 
   private width: any;
   private height: any;
